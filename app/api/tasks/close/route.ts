@@ -3,6 +3,15 @@ import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/firebaseAdmin";
 
+/* 🔐 Explicit Task type for TypeScript */
+type Task = {
+  createdBy: {
+    email: string;
+  };
+  paymentStatus: "pending" | "paid" | "confirmed";
+  status: "open" | "accepted" | "in_progress" | "completed" | "closed";
+};
+
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   const userEmail = session?.user?.email;
@@ -27,12 +36,12 @@ export async function POST(req: Request) {
         throw new Error("Task not found");
       }
 
-      const task = snap.data();
+      const task = snap.data() as Task | undefined;
       if (!task) {
         throw new Error("Invalid task data");
       }
 
-      if (task.createdBy?.email !== userEmail) {
+      if (task.createdBy.email !== userEmail) {
         throw new Error("Only creator can close task");
       }
 
@@ -52,9 +61,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true });
   } catch (err: any) {
-    return NextResponse.json(
-      { error: err.message },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: err.message }, { status: 400 });
   }
 }
