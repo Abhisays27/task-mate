@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
+import type { Orders } from "razorpay/dist/types/orders";
 
 type CreateOrderBody = {
   amount: number;
   currency?: string;
   receipt?: string;
-  notes?: Record<string, unknown>;
+  notes?: Record<string, string | number>;
 };
 
 export async function POST(req: NextRequest) {
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
       key_secret,
     });
 
-    const options = {
+    const options: Orders.RazorpayOrderCreateRequestBody = {
       amount: Math.round(amount * 100), // Razorpay expects paise
       currency,
       receipt: receipt || `rcptid_${Date.now()}`,

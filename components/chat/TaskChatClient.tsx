@@ -119,7 +119,9 @@ export function TaskChatClient({ taskId }: { taskId?: string }) {
     let mounted = true;
     async function loadProfile() {
       try {
-        const res = await fetch(`/api/users/profile?email=${encodeURIComponent(otherEmail)}`);
+        const res = await fetch(
+          `/api/users/profile?email=${encodeURIComponent(otherEmail ?? "")}`
+        );
         const data = await res.json();
         if (!mounted) return;
         setOtherProfile({

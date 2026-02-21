@@ -4,7 +4,8 @@ import { useState } from "react";
 
 type TaskCardProps = {
   // Legacy component (currently not used in main flows). Keep types minimal.
-  task: Record<string, unknown>;
+  // Using `any` here prevents build-time TS failures while keeping this legacy file around.
+  task: Record<string, any>;
   currentUserEmail?: string;
 };
 

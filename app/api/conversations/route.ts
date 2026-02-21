@@ -13,20 +13,23 @@ type ConversationDoc = {
   lastReadAtBy?: Record<string, FirebaseFirestore.Timestamp>;
 };
 
-type ConversationSummary = {
+type ConversationSummaryBase = {
   id: string;
   participantEmails: string[];
   participantKey: string;
+  lastMessageText: string | null;
+  lastMessageAt: string | null;
+  lastMessageSenderEmail: string | null;
+  lastReadAtBy: Record<string, string>;
+};
+
+type ConversationSummary = ConversationSummaryBase & {
   participantProfiles: Array<{
     email: string;
     name: string | null;
     photoURL: string | null;
     lastActive: string | null;
   }>;
-  lastMessageText: string | null;
-  lastMessageAt: string | null;
-  lastMessageSenderEmail: string | null;
-  lastReadAtBy: Record<string, string>;
 };
 
 export async function GET() {
@@ -71,8 +74,8 @@ export async function GET() {
       };
     });
 
-    const dedupedMap = new Map<string, ConversationSummary>();
-    const duplicateBuckets = new Map<string, ConversationSummary[]>();
+    const dedupedMap = new Map<string, ConversationSummaryBase>();
+    const duplicateBuckets = new Map<string, ConversationSummaryBase[]>();
 
     rawConversations.forEach((convo) => {
       const existing = dedupedMap.get(convo.participantKey);
