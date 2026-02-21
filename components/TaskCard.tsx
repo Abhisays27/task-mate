@@ -3,7 +3,8 @@
 import { useState } from "react";
 
 type TaskCardProps = {
-  task: any;
+  // Legacy component (currently not used in main flows). Keep types minimal.
+  task: Record<string, unknown>;
   currentUserEmail?: string;
 };
 
